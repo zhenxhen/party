@@ -575,10 +575,79 @@
             }
         }
 
+        // 자이로스코프 관련 변수들
+        let gyroPermissionGranted = false;
+        let gyroData = { beta: 0, gamma: 0 }; // 기본값 설정
+
         // 파티 페이지 초기화 함수
         function initializeParty() {
             createBoundaries();
             loadImages();
+            requestGyroPermission(); // 자이로 센서 권한 요청
+        }
+
+        // 자이로 센서 권한 요청 및 초기화
+        async function requestGyroPermission() {
+            // iOS 13+ 에서 DeviceMotionEvent 권한 요청
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                try {
+                    const permission = await DeviceMotionEvent.requestPermission();
+                    if (permission === 'granted') {
+                        gyroPermissionGranted = true;
+                        initializeGyroscope();
+                        console.log('자이로 센서 권한이 허용되었습니다.');
+                    } else {
+                        console.log('자이로 센서 권한이 거부되었습니다.');
+                        gyroPermissionGranted = false;
+                    }
+                } catch (error) {
+                    console.log('자이로 센서 권한 요청 중 오류:', error);
+                    gyroPermissionGranted = false;
+                }
+            } 
+            // Android 및 기타 브라우저에서는 바로 초기화
+            else if (window.DeviceOrientationEvent) {
+                gyroPermissionGranted = true;
+                initializeGyroscope();
+                console.log('자이로 센서를 초기화했습니다.');
+            } else {
+                console.log('이 기기는 자이로 센서를 지원하지 않습니다.');
+                gyroPermissionGranted = false;
+            }
+        }
+
+        // 자이로스코프 이벤트 리스너 설정
+        function initializeGyroscope() {
+            if (!gyroPermissionGranted) return;
+
+            window.addEventListener('deviceorientation', function(event) {
+                // beta: 앞뒤 기울임 (-180 ~ 180)
+                // gamma: 좌우 기울임 (-90 ~ 90)
+                gyroData.beta = event.beta || 0;
+                gyroData.gamma = event.gamma || 0;
+                
+                updateGravityFromGyro();
+            });
+        }
+
+        // 자이로 데이터를 바탕으로 중력 방향 업데이트
+        function updateGravityFromGyro() {
+            if (!engine || !gyroPermissionGranted) return;
+
+            // 기본 중력값
+            const baseGravityY = 1;
+            const gravityMultiplier = 0.02; // 자이로 효과 강도 조절
+
+            // 자이로 데이터를 중력으로 변환
+            // gamma (좌우 기울임)을 X축 중력으로
+            const gravityX = (gyroData.gamma || 0) * gravityMultiplier;
+            
+            // beta (앞뒤 기울임)을 Y축 중력으로 (기본 중력에 추가)
+            const gravityY = baseGravityY + ((gyroData.beta || 0) - 90) * gravityMultiplier;
+
+            // 중력 업데이트
+            engine.world.gravity.x = gravityX;
+            engine.world.gravity.y = gravityY;
         }
 
         // 팝업 함수들
