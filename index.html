@@ -491,15 +491,38 @@
             
             const requestUrl = `${url}?${params.toString()}`;
             
-            // 이미지 태그를 이용한 요청 (CORS 우회)
+            // 여러 방법으로 시도
+            // 방법 1: fetch (가장 일반적)
+            fetch(requestUrl, { 
+                method: 'GET',
+                mode: 'no-cors'
+            }).then(() => {
+                console.log('Data sent via fetch');
+            }).catch(() => {
+                console.log('Fetch failed, trying alternative methods');
+            });
+            
+            // 방법 2: 이미지 태그 (CORS 우회)
             const img = new Image();
             img.onload = function() {
-                console.log('Data sent to Google Sheets successfully');
+                console.log('Data sent via image tag successfully');
             };
             img.onerror = function() {
-                console.log('Data sent to Google Sheets (response blocked by CORS, but data likely saved)');
+                console.log('Data sent via image tag (response blocked but likely saved)');
             };
             img.src = requestUrl;
+            
+            // 방법 3: iframe 방식 (백업)
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = requestUrl;
+            document.body.appendChild(iframe);
+            
+            // 3초 후 iframe 제거
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                console.log('Data sent via iframe (backup method)');
+            }, 3000);
         }
 
         // Enroll 폼 제출
