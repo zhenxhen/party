@@ -478,7 +478,7 @@
             }
         }
 
-        // 구글 시트로 데이터 전송
+        // 구글 시트로 데이터 전송 (중복 방지)
         function sendToGoogleSheets(name, phone) {
             // 새로 배포한 URL
             const url = 'https://script.google.com/macros/s/AKfycbz_pKSbmzvmb8uQTd5fplJGgflm8kza85oyKzGh7OR6nEOoLOrUneYLvCOmPKwePxjo/exec';
@@ -491,38 +491,26 @@
             
             const requestUrl = `${url}?${params.toString()}`;
             
-            // 여러 방법으로 시도
-            // 방법 1: fetch (가장 일반적)
+            // 단일 방법으로 전송 (중복 방지)
+            // 방법 1: fetch 시도
             fetch(requestUrl, { 
                 method: 'GET',
                 mode: 'no-cors'
             }).then(() => {
-                console.log('Data sent via fetch');
-            }).catch(() => {
-                console.log('Fetch failed, trying alternative methods');
+                console.log('Data sent successfully via fetch');
+            }).catch((error) => {
+                console.log('Fetch failed, trying image tag method');
+                
+                // 방법 2: fetch 실패시에만 이미지 태그 사용
+                const img = new Image();
+                img.onload = function() {
+                    console.log('Data sent successfully via image tag');
+                };
+                img.onerror = function() {
+                    console.log('Data sent via image tag (response blocked but likely saved)');
+                };
+                img.src = requestUrl;
             });
-            
-            // 방법 2: 이미지 태그 (CORS 우회)
-            const img = new Image();
-            img.onload = function() {
-                console.log('Data sent via image tag successfully');
-            };
-            img.onerror = function() {
-                console.log('Data sent via image tag (response blocked but likely saved)');
-            };
-            img.src = requestUrl;
-            
-            // 방법 3: iframe 방식 (백업)
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = requestUrl;
-            document.body.appendChild(iframe);
-            
-            // 3초 후 iframe 제거
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-                console.log('Data sent via iframe (backup method)');
-            }, 3000);
         }
 
         // Enroll 폼 제출
