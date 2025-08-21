@@ -1,0 +1,58 @@
+/* 공통 팝업 스타일 */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-box {
+    top: 10vh;
+    background: #c5c5c5;
+    padding: 30px;
+    border-radius: 0px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    font-family: "dunkel-sans-cond-rounded", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 18px;
+    color: black;
+    line-height: 1.3;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 음악 팝업 전용 스타일 */
+.music-popup-content {
+    margin-bottom: 20px;
+}
+
+.dj-list {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.playlist-button {
+    background: black;
+    color: #c5c5c5;
+    border: none;
+    padding: 12px 24px;
+    font-family: "dunkel-sans-cond-rounded", sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 0px;
+    width: 100%;
+}
+
+.playlist-button:hover {
+    background: #333;
+} 

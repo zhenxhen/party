@@ -1,0 +1,18 @@
+@import url("https://use.typekit.net/fpm8lim.css");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #c5c5c5;
+    overflow: hidden;
+    font-family: "Sunflower", Arial, sans-serif;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+} 

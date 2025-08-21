@@ -1,0 +1,131 @@
+/* Enroll 페이지 스타일 */
+.enroll-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #c5c5c5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.enroll-image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.enroll-image:hover {
+    transform: scale(1.05);
+}
+
+.enroll-text {
+    margin-top: 30px;
+    font-family: "sunflower", sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.enroll-text:hover {
+    opacity: 0.7;
+}
+
+/* Enroll 폼 팝업 스타일 */
+.enroll-form-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    z-index: 5000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.enroll-form-box {
+    top: 10vh;
+    background: black;
+    padding: 30px;
+    border-radius: 0px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    font-family: "dunkel-sans-cond-rounded", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 18px;
+    color: black;
+    line-height: 1.3;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    color: white;
+    background: black;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    display: block;
+    font-family: "sunflower", sans-serif;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    background: #666;
+    border: none;
+    color: white;
+    font-family: "dunkel-sans-cond-rounded", sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    text-align: center;
+}
+
+.form-input::placeholder {
+    color: #ccc;
+}
+
+.enroll-submit-button {
+    background: black;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-family: "sunflower", sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0px;
+    width: 100%;
+    margin-top: 10px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.enroll-submit-button.active {
+    opacity: 1;
+}
+
+.enroll-submit-button.active:hover {
+    background: #333;
+}
+
+.enroll-submit-button:not(.active) {
+    cursor: not-allowed;
+} 

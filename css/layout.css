@@ -1,0 +1,39 @@
+/* 캔버스 컨테이너 */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    display: block;
+}
+
+/* 카운트다운 타이머 */
+.countdown {
+    position: fixed;
+    top: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "sunflower", sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: black;
+    z-index: 4000;
+    text-align: center;
+}
+
+/* 파티 페이지 기본 정보 */
+.info {
+    position: fixed;
+    top: 10vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    z-index: 1000;
+    font-size: 18px;
+    mix-blend-mode: exclusion;
+    text-align: center;
+} 

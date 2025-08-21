@@ -1,0 +1,4 @@
+/* 파티 페이지는 처음에 숨김 */
+.party-page {
+    display: none;
+} 
