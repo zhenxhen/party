@@ -352,6 +352,10 @@
         // 엔진 생성
         const engine = Engine.create();
         const world = engine.world;
+        
+        // 기본 중력 설정 (아래쪽으로)
+        engine.world.gravity.x = 0;
+        engine.world.gravity.y = 1;
 
         // 캔버스와 렌더러 설정
         const canvas = document.getElementById('world');
@@ -588,6 +592,10 @@
 
         // 자이로 센서 권한 요청 및 초기화
         async function requestGyroPermission() {
+            // 기본 중력 확보 (자이로 센서 여부와 관계없이)
+            engine.world.gravity.x = 0;
+            engine.world.gravity.y = 1;
+            
             // iOS 13+ 에서 DeviceMotionEvent 권한 요청
             if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
                 try {
@@ -634,20 +642,22 @@
         function updateGravityFromGyro() {
             if (!engine || !gyroPermissionGranted) return;
 
-            // 기본 중력값
+            // 기본 중력값 (아래쪽으로)
             const baseGravityY = 1;
-            const gravityMultiplier = 0.02; // 자이로 효과 강도 조절
+            const gravityMultiplier = 0.015; // 자이로 효과 강도 조절 (조금 줄임)
 
             // 자이로 데이터를 중력으로 변환
-            // gamma (좌우 기울임)을 X축 중력으로
+            // gamma (좌우 기울임)을 X축 중력으로 - 미세한 효과만
             const gravityX = (gyroData.gamma || 0) * gravityMultiplier;
             
-            // beta (앞뒤 기울임)을 Y축 중력으로 (기본 중력에 추가)
-            const gravityY = baseGravityY + ((gyroData.beta || 0) - 90) * gravityMultiplier;
+            // beta는 기본적으로 90도 근처에서 평평한 상태
+            // 기본 중력은 항상 아래쪽(+Y)으로 유지하고, 자이로는 미세 조정만
+            const betaOffset = (gyroData.beta || 0) - 0; // 0도를 기준으로 계산
+            const gravityY = baseGravityY + (betaOffset * gravityMultiplier * 0.5); // Y축 효과는 더 작게
 
-            // 중력 업데이트
+            // 중력 업데이트 - Y는 항상 양수로 유지 (아래쪽으로)
             engine.world.gravity.x = gravityX;
-            engine.world.gravity.y = gravityY;
+            engine.world.gravity.y = Math.max(0.5, gravityY); // 최소 0.5로 아래쪽 중력 보장
         }
 
         // 팝업 함수들
