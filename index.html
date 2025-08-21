@@ -480,8 +480,8 @@
 
         // 구글 시트로 데이터 전송 (중복 방지)
         function sendToGoogleSheets(name, phone) {
-            // 새로 배포한 URL
-            const url = 'https://script.google.com/macros/s/AKfycbz_pKSbmzvmb8uQTd5fplJGgflm8kza85oyKzGh7OR6nEOoLOrUneYLvCOmPKwePxjo/exec';
+            // 최신 배포 URL (중복 방지 기능 포함)
+            const url = 'https://script.google.com/macros/s/AKfycbyYuD4ThJ__c4kirch1kMvday2Lsmzx8vwxhZH4xzVje5DI9_WZn3KH9ymO8HMLVkq7/exec';
             
             // GET 방식으로 간단하게 전송 (CORS 문제 해결)
             const params = new URLSearchParams({
@@ -513,17 +513,34 @@
             });
         }
 
+        // 제출 중복 방지 플래그
+        let isSubmitting = false;
+
         // Enroll 폼 제출
         function submitEnrollForm() {
             const enrollButton = document.getElementById('enrollButton');
+            
+            // 이미 제출 중이면 중단
+            if (isSubmitting) {
+                console.log('Already submitting, please wait...');
+                return;
+            }
             
             // active 상태가 아니면 제출하지 않음
             if (!enrollButton.classList.contains('active')) {
                 return;
             }
             
+            // 제출 시작 - 중복 방지 플래그 설정
+            isSubmitting = true;
+            enrollButton.textContent = 'enrolling...';
+            enrollButton.style.opacity = '0.5';
+            enrollButton.style.cursor = 'not-allowed';
+            
             const userName = document.getElementById('userName').value;
             const userPhone = document.getElementById('userPhone').value;
+            
+            console.log(`Submitting enrollment for: ${userName}, ${userPhone}`);
             
             // 구글 시트로 데이터 전송
             sendToGoogleSheets(userName, userPhone);
@@ -531,9 +548,17 @@
             // 사용자 이름을 파티 페이지에 반영하고 적절한 폰트 적용
             applyUsernameFontStyle(userName);
             
-            // 폼 닫고 파티 페이지로 이동
-            closeEnrollForm();
-            enterParty();
+            // 잠시 대기 후 폼 닫고 파티 페이지로 이동
+            setTimeout(() => {
+                closeEnrollForm();
+                enterParty();
+                
+                // 제출 완료 - 플래그 리셋 (다음 사용자를 위해)
+                isSubmitting = false;
+                enrollButton.textContent = 'enroll';
+                enrollButton.style.opacity = '1';
+                enrollButton.style.cursor = 'pointer';
+            }, 1000);
         }
 
         // Enroll에서 파티 페이지로 전환
