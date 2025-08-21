@@ -381,7 +381,6 @@
         let imageObjects = [];
         let loadedImages = 0;
         let isPartyStarted = false;
-        let gyroscopePermissionGranted = false;
 
         // 카운트다운 함수
         function updateCountdown() {
@@ -543,56 +542,9 @@
         function initializeParty() {
             createBoundaries();
             loadImages();
-            requestGyroscopePermission();
         }
 
-        // 자이로 센서 권한 요청
-        function requestGyroscopePermission() {
-            // iOS 13+ 권한 요청
-            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-                DeviceMotionEvent.requestPermission()
-                    .then(response => {
-                        if (response === 'granted') {
-                            gyroscopePermissionGranted = true;
-                            startGyroscope();
-                        } else {
-                            console.log('자이로 센서 권한이 거부되었습니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('자이로 센서 권한 요청 오류:', error);
-                    });
-            } else {
-                // iOS 13 미만 또는 Android
-                gyroscopePermissionGranted = true;
-                startGyroscope();
-            }
-        }
 
-        // 자이로 센서 시작
-        function startGyroscope() {
-            if (gyroscopePermissionGranted) {
-                window.addEventListener('deviceorientation', handleDeviceOrientation, true);
-            }
-        }
-
-        // 기기 기울기에 따른 중력 조정
-        function handleDeviceOrientation(event) {
-            if (!engine || !engine.world) return;
-            
-            // 기기 기울기 값 (degree)
-            const gamma = event.gamma || 0; // 좌우 기울기 (-90 ~ 90)
-            const beta = event.beta || 0;   // 앞뒤 기울기 (-180 ~ 180)
-            
-            // 기울기를 중력으로 변환 (민감도 조정)
-            const sensitivity = 0.01;
-            const gravityX = Math.sin(gamma * Math.PI / 180) * sensitivity;
-            const gravityY = Math.cos(beta * Math.PI / 180) * sensitivity + 0.001; // 기본 아래쪽 중력 유지
-            
-            // Matter.js 엔진의 중력 설정
-            engine.world.gravity.x = gravityX;
-            engine.world.gravity.y = gravityY;
-        }
 
         // 팝업 함수들
         function showPopup() {
